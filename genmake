@@ -70,14 +70,13 @@ function atoi() {
 
 ################################## update ######################################
 
-SCRIPT=$(readlink -f "$0")
-SCRIPTPATH=$(dirname "$SCRIPT")
+GMDIR=$(dirname $0)
 SCRIPTNAME="$0"
 ARGS="$@"
 BRANCH="master"
 
 self_update() {
-	cd $SCRIPTPATH
+	cd $GMDIR
     git fetch
     [ -n $(git diff --name-only origin/$BRANCH) ] && {
         echo "Found a new version of me, updating myself..."
@@ -91,6 +90,7 @@ self_update() {
         exit 1
     }
     echo "Already the latest version."
+	cd $PROJDIR
 }
 
 self_update
@@ -143,7 +143,6 @@ done
 
 ############################## make makefile ###################################
 
-GMDIR=$(dirname $0)
 #printf "GMDIR: %s\n" $GMDIR
 make -C $GMDIR PROJDIR=$PROJDIR TYPE=$TYPE TARG=$NAME
 rm -f $GMDIR/odeps
