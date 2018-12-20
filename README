@@ -1,4 +1,4 @@
-0: pre-requisites:
+Pre-requisites:
 	- the project must be developped in C
 	- there must be a src/ directory where all the C files will be (either
 	  directly at the root of the directory or in subdirectories)
@@ -10,10 +10,6 @@
 	- if any of these requirements are not met, genmake will not be able to
 	produce a working makefile for the project
 
-1: move/copy the genmake folder to the root of the project directory
-2: simply type 'make' in genmake/ to generate the Makefile for a program
-
-3: options:
 usage: genmake [path] [-h] [-t type] [-n name]
 options:
    		-h | --help:    Print this.
