@@ -70,7 +70,6 @@ function atoi() {
 
 ################################## update ######################################
 
-GMDIR=$(dirname $0)
 SCRIPTNAME="$0"
 ARGS="$@"
 BRANCH="master"
@@ -92,8 +91,6 @@ self_update() {
     echo "Already the latest version."
 	cd $PROJDIR
 }
-
-self_update
 
 ############################## option parser ###################################
 
@@ -143,6 +140,7 @@ done
 
 ############################## make makefile ###################################
 
+GMDIR=$(dirname $0)
 #printf "GMDIR: %s\n" $GMDIR
 make -C $GMDIR PROJDIR=$PROJDIR TYPE=$TYPE TARG=$NAME
 rm -f $GMDIR/odeps
