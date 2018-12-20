@@ -25,3 +25,4 @@ options:
 				'.a' will be added to the name if the
 				type of the target is 'lib' and the
 				extension is not present.
+		-v | --verbose:	Print additional information.

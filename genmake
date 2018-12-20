@@ -70,6 +70,7 @@ function atoi() {
 
 ################################## update ######################################
 
+GMDIR=$(dirname $0)
 SCRIPTNAME="$0"
 ARGS="$@"
 BRANCH="master"
@@ -94,18 +95,21 @@ self_update() {
 
 ############################## option parser ###################################
 
+VERB=0
 while [ "$1" != "" ]; do
 	OPT=$1
 	case $OPT in
-	-h | --help )	usage
-					exit 0
-					;;
-	-t | --type )	shift
-					TYPE=$1
-					;;
-	-n | --name )	shift
-					NAME=$1
-					;;
+	-h | --help )		usage
+						exit 0
+						;;
+	-t | --type )		shift
+						TYPE=$1
+						;;
+	-n | --name )		shift
+						NAME=$1
+						;;
+	-v | --verbose )	VERB=1
+						;;
 	* )				if [ "$PROJDIR" != "$PWDIR" ]; then
 						echo "genmake: \""$1"\" is not a valid argument or option."
 						exit 1
@@ -133,14 +137,21 @@ done
 
 ############################### debug values ###################################
 
-#printf "PROJDIR: %s\n" $PROJDIR
-#printf "PWDIR: %s\n" $PWDIR
-#echo "TYPE: "$TYPE
-#echo "NAME: "$NAME
+if [ $VERB != 0 ]; then
+	printf "PROJDIR: %s\n" $PROJDIR
+	printf "PWDIR: %s\n" $PWDIR
+	printf "GMDIR: %s\n" $GMDIR
+	printf "TYPE: %s\n" $TYPE
+	printf "NAME: %s\n" $NAME
+fi
 
 ############################## make makefile ###################################
 
-GMDIR=$(dirname $0)
-#printf "GMDIR: %s\n" $GMDIR
-make -C $GMDIR PROJDIR=$PROJDIR TYPE=$TYPE TARG=$NAME
-rm -f $GMDIR/odeps
+if [ $VERB != 0 ]; then
+	make -C $GMDIR PROJDIR=$PROJDIR TYPE=$TYPE TARG=$NAME
+	rm -f $GMDIR/odeps
+else
+	make -C $GMDIR PROJDIR=$PROJDIR TYPE=$TYPE TARG=$NAME > /dev/null
+	rm -f $GMDIR/odeps > /dev/null
+fi
+
