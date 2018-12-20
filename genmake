@@ -147,11 +147,23 @@ fi
 
 ############################## make makefile ###################################
 
+ERR=0
+
+printf "making Makefile...\n"
+
 if [ $VERB != 0 ]; then
 	make -C $GMDIR PROJDIR=$PROJDIR TYPE=$TYPE TARG=$NAME
+	ERR=$?
 	rm -f $GMDIR/odeps
 else
 	make -C $GMDIR PROJDIR=$PROJDIR TYPE=$TYPE TARG=$NAME > /dev/null
+	ERR=$?
 	rm -f $GMDIR/odeps > /dev/null
+fi
+
+if [ $ERR != 0 ]; then
+	printf "error: unable to make makefile\n"
+else
+	printf "Makefile ready !\n"
 fi
 
