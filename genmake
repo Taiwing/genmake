@@ -1,0 +1,122 @@
+#!/bin/zsh
+
+########################## input/option variables ##############################
+
+PROJDIR=$(pwd)
+PWDIR=$PROJDIR
+TYPE="exec"
+NAME="exec"
+
+################################# utils ########################################
+
+function usage {
+	printf "usage: genmake [path] [-h] [-t type] [-n name]\n\n"
+	printf "options:\n"
+	printf "	-h | --help:	Print this.\n"
+	printf "	-t | --type:	The next argument is the type\n"
+	printf "			of the target that the generated\n"
+	printf "			makefile will create. That value\n"
+	printf "			can be 'exec 'or 'lib', where the\n"
+	printf "			first one refers to a program, and\n"
+	printf "			the second to a library (compiles\n"
+	printf "			a program by default).\n"
+	printf "	-n | --name:	Name of the target ('exec' by default\n"
+	printf "			or 'lib.a' if type is 'lib'). A suffix\n"
+	printf "			'.a' will be added to the name if the\n"
+	printf "			type of the target is 'lib' and the\n"
+	printf "			extension is not present.\n"
+}
+
+function atoi() {
+	local I=0
+	local C=0
+	while [ "${1:$C:1}" != "" ]; do
+		case ${1:$C:1} in
+		0 )			I=$((I*10))
+					;;
+		1 )			I=$((I*10))
+					I=$((I+1))
+					;;
+		2 )			I=$((I*10))
+					I=$((I+2))
+					;;
+		3 )			I=$((I*10))
+					I=$((I+3))
+					;;
+		4 )			I=$((I*10))
+					I=$((I+4))
+					;;
+		5 )			I=$((I*10))
+					I=$((I+5))
+					;;
+		6 )			I=$((I*10))
+					I=$((I+6))
+					;;
+		7 )			I=$((I*10))
+					I=$((I+7))
+					;;
+		8 )			I=$((I*10))
+					I=$((I+8))
+					;;
+		9 )			I=$((I*10))
+					I=$((I+9))
+					;;
+		* )			break
+		esac
+		C=$((C+1))
+	done
+	return $((I))
+}
+
+############################## option parser ###################################
+
+while [ "$1" != "" ]; do
+	OPT=$1
+	case $OPT in
+	-h | --help )	usage
+					exit 0
+					;;
+	-t | --type )	shift
+					TYPE=$1
+					;;
+	-n | --name )	shift
+					NAME=$1
+					;;
+	* )				if [ "$PROJDIR" != "$PWDIR" ]; then
+						echo "genmake: \""$1"\" is not a valid argument or option."
+						exit 1
+					else
+						if [[ ${OPT:0:1} == "/" ]]; then
+							PROJDIR=$OPT
+						else
+							PROJDIR=$PWDIR/$OPT
+						fi
+						atoi ${#PROJDIR}
+						LEN=$?
+						LEN=$((LEN-=1))
+						if [ ${#OPT} -gt 1 ] && [[ ${PROJDIR:$LEN:1} == "/" ]]; then
+							PROJDIR=${PROJDIR:0:$LEN}
+						fi
+						OPT=""
+					fi
+	esac
+	if [ "$OPT" != "" ] && [ -z "$1" ]; then
+		echo "genmake: no argument given for \"$OPT\" option"
+		exit 1
+	fi
+	shift
+done
+
+############################### debug values ###################################
+
+#printf "PROJDIR: %s\n" $PROJDIR
+#printf "PWDIR: %s\n" $PWDIR
+#echo "TYPE: "$TYPE
+#echo "NAME: "$NAME
+
+############################## make makefile ###################################
+
+GMDIR=$(dirname $0)
+#printf "GMDIR: %s\n" $GMDIR
+make -C $GMDIR PROJDIR=$PROJDIR TYPE=$TYPE TARG=$NAME
+rm -f $GMDIR/odeps
