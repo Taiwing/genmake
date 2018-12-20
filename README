@@ -14,14 +14,14 @@ usage: genmake [path] [-h] [-t type] [-n name]
 options:
 		-h | --help:    Print this.
 		-t | --type:    The next argument is the type
-						of the target that the generated
-						makefile will create. That value
-						can be 'exec 'or 'lib', where the
-						first one refers to a program, and
-						the second to a library (compiles
-						a program by default).
+				of the target that the generated
+				makefile will create. That value
+				can be 'exec 'or 'lib', where the
+				first one refers to a program, and
+				the second to a library (compiles
+				a program by default).
 		-n | --name:    Name of the target ('exec' by default
-						or 'lib.a' if type is 'lib'). A suffix
-						'.a' will be added to the name if the
-						type of the target is 'lib' and the
-						extension is not present.
+				or 'lib.a' if type is 'lib'). A suffix
+				'.a' will be added to the name if the
+				type of the target is 'lib' and the
+				extension is not present.
