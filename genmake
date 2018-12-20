@@ -85,12 +85,15 @@ self_update() {
         git checkout $BRANCH
         git pull --force
         echo "Running the new version..."
+		cd $PROJDIR
         exec "$SCRIPTNAME" "$@"
         # Now exit this old instance
         exit 1
     }
     echo "Already the latest version."
 }
+
+self_update
 
 ############################## option parser ###################################
 
