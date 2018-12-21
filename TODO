@@ -1,1 +1,2 @@
 - add an auto-update/auto-install script
+- check that a directory is well formated (check_format.py script)

@@ -96,37 +96,75 @@ self_update() {
 ############################## option parser ###################################
 
 VERB=0
+DEBUG=0
+SUBCOUNT=0
+SUBPATHS=""
+SUBTYPES=""
+SUBNAMES=""
 while [ "$1" != "" ]; do
 	OPT=$1
 	case $OPT in
-	-h | --help )		usage
-						exit 0
-						;;
-	-t | --type )		shift
-						TYPE=$1
-						;;
-	-n | --name )		shift
-						NAME=$1
-						;;
-	-v | --verbose )	VERB=1
-						;;
-	* )				if [ "$PROJDIR" != "$PWDIR" ]; then
-						echo "genmake: \""$1"\" is not a valid argument or option."
-						exit 1
-					else
-						if [[ ${OPT:0:1} == "/" ]]; then
-							PROJDIR=$OPT
-						else
-							PROJDIR=$PWDIR/$OPT
-						fi
-						atoi ${#PROJDIR}
-						LEN=$?
-						LEN=$((LEN-=1))
-						if [ ${#OPT} -gt 1 ] && [[ ${PROJDIR:$LEN:1} == "/" ]]; then
-							PROJDIR=${PROJDIR:0:$LEN}
-						fi
-						OPT=""
-					fi
+	-h | --help )
+		usage
+		exit 0
+		;;
+	-t | --type )
+		shift
+		TYPE=$1
+		;;
+	-n | --name )
+		shift
+		NAME=$1
+		;;
+	-s | --subproject )
+		shift
+		SUBCOUNT=$((SUBCOUNT+1))
+		SUBPATHS+="$1"$'\n'
+		SUBTYPES+="lib"$'\n'
+		SUBNAMES+="lib"$SUBCOUNT$'.a\n'
+		;;
+	-stn | -snt | -nts | -nst | -tns | -tsn | -st | -ts | -sn | -ns )
+		SUBCOUNT=$((SUBCOUNT+1))
+		LEN=${#OPT}
+		for ((c=1; c<$LEN; c++)); do
+			shift
+			if [ -z "$1" ]; then
+				break
+			fi
+			if [[ ${OPT:$c:1} == "s" ]]; then
+				SUBPATHS+="$1"$'\n'
+			elif [[ ${OPT:$c:1} == "t" ]]; then
+				SUBTYPES+="$1"$'\n'
+			elif [[ ${OPT:$c:1} == "n" ]]; then
+				SUBNAMES+="$1"$'\n'
+			fi
+		done
+		;;
+	-v | --verbose )
+		VERB=1
+		;;
+	-d | --debug )
+		VERB=1
+		DEBUG=1
+		;;
+	* )
+		if [ "$PROJDIR" != "$PWDIR" ]; then
+			echo "genmake: \""$1"\" is not a valid argument or option."
+			exit 1
+		else
+			if [[ ${OPT:0:1} == "/" ]]; then
+				PROJDIR=$OPT
+			else
+				PROJDIR=$PWDIR/$OPT
+			fi
+			atoi ${#PROJDIR}
+			LEN=$?
+			LEN=$((LEN-=1))
+			if [ ${#OPT} -gt 1 ] && [[ ${PROJDIR:$LEN:1} == "/" ]]; then
+				PROJDIR=${PROJDIR:0:$LEN}
+			fi
+			OPT=""
+		fi
 	esac
 	if [ "$OPT" != "" ] && [ -z "$1" ]; then
 		echo "genmake: no argument given for \"$OPT\" option"
@@ -143,6 +181,10 @@ if [ $VERB != 0 ]; then
 	printf "GMDIR: %s\n" $GMDIR
 	printf "TYPE: %s\n" $TYPE
 	printf "NAME: %s\n" $NAME
+	printf "SUBCOUNT: %d\n" $SUBCOUNT
+	printf "SUBPATHS: %s\n" $SUBPATHS
+	printf "SUBTYPES: %s\n" $SUBTYPES
+	printf "SUBNAMES: %s\n" $SUBNAMES
 fi
 
 ############################## make makefile ###################################
@@ -151,7 +193,7 @@ ERR=0
 
 printf "making Makefile...\n"
 
-if [ $VERB != 0 ]; then
+if [ $DEBUG != 0 ]; then
 	make -C $GMDIR PROJDIR=$PROJDIR TYPE=$TYPE TARG=$NAME
 	ERR=$?
 	rm -f $GMDIR/odeps
