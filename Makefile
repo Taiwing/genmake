@@ -6,7 +6,7 @@
 #    By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/12/14 22:53:56 by yforeau           #+#    #+#              #
-#    Updated: 2018/12/21 21:43:38 by yforeau          ###   ########.fr        #
+#    Updated: 2018/12/21 22:06:20 by yforeau          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,13 +33,13 @@ DEBUG		?=	0
 
 debug:
 ifeq ($(DEBUG), 1)
-	@echo "PROJDIR: $(PROJDIR)"
+	@echo PROJDIR: $(PROJDIR)
 	@echo TYPE: $(TYPE)
 	@echo NAME: $(NAME)
 	@echo SUBCOUNT: $(SUBCOUNT)
-	@echo "SUBPATHS: $(SUBPATHS)"
-#	@echo SUBTYPES: $(SUBTYPES)
-#	@echo SUBNAMES: $(SUBNAMES)
+	@echo SUBPATHS: $(SUBPATHS)
+	@echo SUBTYPES: $(SUBTYPES)
+	@echo SUBNAMES: $(SUBNAMES)
 endif
 
 ################################# SOURCES ######################################

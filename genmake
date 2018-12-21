@@ -131,7 +131,7 @@ while [ "$1" != "" ]; do
 		if [[ $1 != (*[ ]*) ]]; then
 			SUBPATHS+="$1 "
 		else
-			SUBPATHS+="\"$1\" "
+			SUBPATHS+="\"\\\"$1\\\"\" "
 		fi
 		SUBTYPES+="lib "
 		SUBNAMES+="lib$SUBCOUNT.a "
@@ -148,19 +148,19 @@ while [ "$1" != "" ]; do
 				if [[ $1 != (*[ ]*) ]]; then
 					SUBPATHS+="$1 "
 				else
-					SUBPATHS+="\"$1\" "
+					SUBPATHS+="\"\\\"$1\\\"\" "
 				fi
 			elif [[ ${OPT:$c:1} == "t" ]]; then
 				if [[ $1 != (*[ ]*) ]]; then
 					SUBTYPES+="$1 "
 				else
-					SUBTYPES+="\"$1\" "
+					SUBTYPES+="\"\\\"$1\\\"\" "
 				fi
 			elif [[ ${OPT:$c:1} == "n" ]]; then
 				if [[ $1 != (*[ ]*) ]]; then
 					SUBNAMES+="$1 "
 				else
-					SUBNAMES+="\"$1\" "
+					SUBNAMES+="\"\\\"$1\\\"\" "
 				fi
 			fi
 		done
