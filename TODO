@@ -1,2 +1,16 @@
 - add an auto-update/auto-install script
 - check that a directory is well formated (check_format.py script)
+- If it is not well formatted and that --format is not set, it should leave
+  with an error being printed. It should also leave if subfolders exist beyond
+  the first level and that they are not declared as subprojects or if the
+  --recursive option is not set
+- handle subprojects beyond the option parser (add the rules in the makefiles)
+- create a --recursive option to create makefiles recursively if subproject are
+  declared (options from the first genmake call will have to be passed) and
+  maybe another one to prevent genmake from getting into certain subfolders
+- add a --format option to format the project dir if it is not compliant with
+  genmake's requirements, it should move every header to a includes/ directory
+  that will be created if it doesn't exist, and also every C files/C folders
+  to a src/ dir. It should also change the #include directives if they refer
+  to a header in includes/ with a path so that it only takes the name. this
+  option should work with 
