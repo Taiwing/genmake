@@ -6,7 +6,7 @@
 #    By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/12/14 22:53:56 by yforeau           #+#    #+#              #
-#    Updated: 2018/12/21 22:06:20 by yforeau          ###   ########.fr        #
+#    Updated: 2018/12/21 22:47:13 by yforeau          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -62,7 +62,8 @@ all: debug $(NAME)
 $(NAME): odeps
 	./format_odeps.py odeps
 	./make_makefile.py odeps $(TYPE) $(TARG) $(PROJDIR) $(HDIR) $(SRCDIR)\
-		$(NBRDIRS) $(DIRS) $(NBRCF) $(CFILES)
+		$(NBRDIRS) $(DIRS) $(NBRCF) $(CFILES) $(SUBCOUNT) $(SUBNAMES)\
+		$(SUBPATHS) $(SUBTYPES)
 
 odeps: $(CFILES)
 	rm -f $@

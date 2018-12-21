@@ -2,7 +2,7 @@
 
 import sys
 
-if len(sys.argv) < 7:
+if len(sys.argv) < 10:
     sys.exit()
 
 odeps = open(sys.argv[1])
