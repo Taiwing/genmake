@@ -221,7 +221,7 @@ else
 fi
 
 if [ $ERR != 0 ]; then
-	printf "error: unable to make makefile\n"
+	printf "error: unable to make makefile :(\n"
 else
 	printf "Makefile ready !\n"
 fi
