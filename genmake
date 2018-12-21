@@ -223,7 +223,7 @@ ERR=0
 printf "making Makefile...\n"
 
 if [ $DEBUG != 0 ]; then
-	make -C $GMDIR PROJDIR=$PROJDIR TYPE=$TYPE TARG=$NAME
+	make -C $GMDIR PROJDIR=$PROJDIR TYPE=$TYPE TARG=$NAME DEBUG=$DEBUG
 	ERR=$?
 	rm -f $GMDIR/odeps
 else

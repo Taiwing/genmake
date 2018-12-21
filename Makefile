@@ -6,7 +6,7 @@
 #    By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/12/14 22:53:56 by yforeau           #+#    #+#              #
-#    Updated: 2018/12/20 22:53:24 by yforeau          ###   ########.fr        #
+#    Updated: 2018/12/21 20:57:21 by yforeau          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,16 +14,35 @@
 
 CC			=	gcc
 CFLAGS		=	-O -c -Wall -Wextra -Werror
-PROJDIR		?=	..
-HDIR		=	includes
-HFLAGS		=	-I $(PROJDIR)/$(HDIR)
-# can be exec or lib:
-TYPE		?=	exec
-# can be whatevs:
-TARG		?=	$(TYPE)
 NAME		=	Makefile
+HDIR		=	includes
 
-############################## SOURCES #########################################
+############################# GENMAKE INPUT ####################################
+
+PROJDIR		?=	..
+HFLAGS		=	-I $(PROJDIR)/$(HDIR)
+TYPE		?=	exec
+TARG		?=	$(TYPE)
+SUBCOUNT	?=	0
+SUBPATHS	?=	""
+SUBTYPES	?=	""
+SUBNAMES	?=	""
+DEBUG		?=	0
+
+############################### DEBUG VALUES ###################################
+
+debug:
+ifeq ($(DEBUG), 1)
+	@echo PROJDIR: $(PROJDIR)
+	@echo TYPE: $(TYPE)
+	@echo NAME: $(NAME)
+	@echo SUBCOUNT: $(SUBCOUNT)
+	@echo SUBPATHS: $(SUBPATHS)
+	@echo SUBTYPES: $(SUBTYPES)
+	@echo SUBNAMES: $(SUBNAMES)
+endif
+
+################################# SOURCES ######################################
 
 SRCDIR	=	src
 DIRS	=	$(shell find $(PROJDIR)/$(SRCDIR) -type d -name "*")
@@ -38,7 +57,7 @@ vpath	%.c	$(DIRS)
 
 ############################## BUILD ###########################################
 
-all: $(NAME)
+all: debug $(NAME)
 
 $(NAME): odeps
 	./format_odeps.py odeps
@@ -59,4 +78,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all odeps fclean clean re
+.PHONY: all odeps debug fclean clean re
