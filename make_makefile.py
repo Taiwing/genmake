@@ -30,10 +30,6 @@ if targ_type != "lib" or (len(targ_name) > 2 and targ_name[-2:] == ".a"):
 elif targ_type == "lib":
     makef.write(targ_name + ".a\n\n")
 
-dirs = []
-for i in range(1, nbr_dirs):
-    dirs.append(sys.argv[8 + i].split('/')[-1])
-
 sub_names = []
 sub_dirs = []
 sub_types = []
@@ -42,30 +38,41 @@ for i in range(0, nbr_subs):
     sub_dirs.append(sys.argv[10 + nbr_dirs + nbr_files + nbr_subs + i])
     sub_types.append(sys.argv[10 + nbr_dirs + nbr_files + (nbr_subs * 2) + i])
 
+dirs = []
+pathlen = len(projdir.split('/'))
+for i in range(1, nbr_dirs):
+    path_dir = sys.argv[8 + i].split('/')
+    if len(path_dir) == pathlen + 2:
+        dirs.append(path_dir[-1])
+    else:
+        dirs.append("DO_NOT_APPEND")
+
 makef.write("############################## SOURCES #########################################\n\n")
 makef.write("SRCDIR\t\t\t=\t" + srcdir + "\n\n")
 for direc in dirs:
-    makef.write(direc.upper())
-    if len(direc) < 5:
-        makef.write("DIR\t\t\t=\t")
-    elif len(direc) < 9:
-        makef.write("DIR\t\t=\t")
-    else:
-        makef.write("DIR\t=\t")
-    makef.write(direc + "\n")
+    if direc != "DO_NOT_APPEND" and direc not in sub_dirs:
+        makef.write(direc.upper())
+        if len(direc) < 5:
+           makef.write("DIR\t\t\t=\t")
+        elif len(direc) < 9:
+            makef.write("DIR\t\t=\t")
+        else:
+            makef.write("DIR\t=\t")
+        makef.write(direc + "\n")
 if len(dirs) > 0:
     makef.write("\n")
 
 files = {}
 for i in range(0, nbr_dirs - 1):
-    files[dirs[i]] = []
+    if dirs[i] != "DO_NOT_APPEND":
+        files[dirs[i]] = []
 files[srcdir] = []
 
 for i in range(0, nbr_files):
     raw = sys.argv[9 + nbr_dirs + i].split('/')
     if raw[-2] == "":
         files[srcdir].append(raw[-1])
-    else:
+    elif raw[-2] in files:
         files[raw[-2]].append(raw[-1])
 
 if len(files[srcdir]) > 0:
@@ -78,25 +85,35 @@ if len(files[srcdir]) > 0:
     makef.write("\n")
 
 for i in range(0, nbr_dirs - 1):
-    makef.write(dirs[i].upper() + "C")
-    if len(dirs[i]) < 3:
-        makef.write("\t\t\t\t=\t")
-    elif len(dirs[i]) < 7:
-        makef.write("\t\t\t=\t")
-    else:
-        makef.write("\t\t=\t")
-    for cfile in files[dirs[i]]:
-        if cfile == files[dirs[i]][0]:
-            makef.write(cfile + "\\\n")
+    if dirs[i] != "DO_NOT_APPEND" and dirs[i] not in sub_dirs:
+        makef.write(dirs[i].upper() + "C")
+        if len(dirs[i]) < 3:
+            makef.write("\t\t\t\t=\t")
+        elif len(dirs[i]) < 7:
+            makef.write("\t\t\t=\t")
         else:
-            makef.write("\t\t\t\t\t" + cfile + "\\\n")
-    makef.write("\n")
+            makef.write("\t\t=\t")
+        for cfile in files[dirs[i]]:
+            if cfile == files[dirs[i]][0]:
+                makef.write(cfile + "\\\n")
+            else:
+                makef.write("\t\t\t\t\t" + cfile + "\\\n")
+        makef.write("\n")
 
 makef.write("ODIR\t\t\t=\tobj\n")
-if nbr_dirs > 1:
-    makef.write("OBJ\t\t\t\t=\t$(patsubst %.c,%.o,$(" + dirs[0].upper() + "C))\\\n")
-    for i in range(1, len(dirs)):
-        makef.write("\t\t\t\t\t$(patsubst %.c,%.o,$(" + dirs[i].upper() + "C))\\\n")
+real_nbr_dirs = nbr_dirs
+for i in range(0, nbr_dirs - 1):
+    if dirs[i] == "DO_NOT_APPEND" or dirs[i] in sub_dirs:
+        real_nbr_dirs -= 1
+if real_nbr_dirs > 1:
+    first_line = 1
+    for i in range(0, len(dirs)):
+        if dirs[i] != "DO_NOT_APPEND" or dirs[i] not in sub_dirs:
+            if first_line:
+                makef.write("OBJ\t\t\t\t=\t$(patsubst %.c,%.o,$(" + dirs[i].upper() + "C))\\\n")
+                first_line = 0
+            else:
+                makef.write("\t\t\t\t\t$(patsubst %.c,%.o,$(" + dirs[i].upper() + "C))\\\n")
     if len(files[srcdir]) > 0:
         makef.write("\t\t\t\t\t$(patsubst %.c,%.o,$(" + srcdir.upper() + "C))\\\n")
 elif len(files[srcdir]) > 0:
