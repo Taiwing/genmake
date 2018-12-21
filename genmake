@@ -32,7 +32,8 @@ function usage {
 	printf "	-s | --subproject:	Declare a directory as a subproject\n"
 	printf "			with its own Makefile. A rule to make it will be\n"
 	printf "			added to the final Makefile. --type and --name\n"
-	printf "			can be used with --subproject.\n"
+	printf "			can be used with --subproject. If no type is\n"
+	printf "			provided it will default to lib.\n"
 }
 
 function atoi() {
@@ -127,9 +128,13 @@ while [ "$1" != "" ]; do
 	-s | --subproject )
 		shift
 		SUBCOUNT=$((SUBCOUNT+1))
-		SUBPATHS+="$1"$'\n'
-		SUBTYPES+="lib"$'\n'
-		SUBNAMES+="lib"$SUBCOUNT$'.a\n'
+		if [[ $1 != (*[ ]*) ]]; then
+			SUBPATHS+="$1 "
+		else
+			SUBPATHS+="\"$1\" "
+		fi
+		SUBTYPES+="lib "
+		SUBNAMES+="lib$SUBCOUNT.a "
 		;;
 	-stn | -snt | -nts | -nst | -tns | -tsn | -st | -ts | -sn | -ns )
 		SUBCOUNT=$((SUBCOUNT+1))
@@ -140,11 +145,23 @@ while [ "$1" != "" ]; do
 				break
 			fi
 			if [[ ${OPT:$c:1} == "s" ]]; then
-				SUBPATHS+="$1"$'\n'
+				if [[ $1 != (*[ ]*) ]]; then
+					SUBPATHS+="$1 "
+				else
+					SUBPATHS+="\"$1\" "
+				fi
 			elif [[ ${OPT:$c:1} == "t" ]]; then
-				SUBTYPES+="$1"$'\n'
+				if [[ $1 != (*[ ]*) ]]; then
+					SUBTYPES+="$1 "
+				else
+					SUBTYPES+="\"$1\" "
+				fi
 			elif [[ ${OPT:$c:1} == "n" ]]; then
-				SUBNAMES+="$1"$'\n'
+				if [[ $1 != (*[ ]*) ]]; then
+					SUBNAMES+="$1 "
+				else
+					SUBNAMES+="\"$1\" "
+				fi
 			fi
 		done
 		if [ $LEN -lt 4 ]; then
@@ -152,16 +169,10 @@ while [ "$1" != "" ]; do
 			if [[ ${OPT:$LEN:1} == "s" ]]; then
 				LEN=$((LEN-1))
 			fi
-			#if we have a subproject provided with only a name ending
-			#whith ".a" the type will default to a library
 			if [[ ${OPT:$LEN:1} == "t" ]]; then
-				SUBNAMES+="default"$'\n'
+				SUBNAMES+="default "
 			elif [[ ${OPT:$LEN:1} == "n" ]]; then
-				if [ ${#SUBNAMES} -gt 4 ] && [[ ${SUBNAMES:${#SUBNAMES}-3:2} == ".a" ]]; then
-					SUBTYPES+=$'lib\n'
-				else
-					SUBTYPES+=$'exec\n'
-				fi
+				SUBTYPES+="lib "
 			fi
 		fi
 		;;

@@ -6,7 +6,7 @@
 #    By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/12/14 22:53:56 by yforeau           #+#    #+#              #
-#    Updated: 2018/12/21 21:13:59 by yforeau          ###   ########.fr        #
+#    Updated: 2018/12/21 21:43:38 by yforeau          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,7 @@ ifeq ($(DEBUG), 1)
 	@echo TYPE: $(TYPE)
 	@echo NAME: $(NAME)
 	@echo SUBCOUNT: $(SUBCOUNT)
-#	@echo "SUBPATHS: $(SUBPATHS)"
+	@echo "SUBPATHS: $(SUBPATHS)"
 #	@echo SUBTYPES: $(SUBTYPES)
 #	@echo SUBNAMES: $(SUBNAMES)
 endif
