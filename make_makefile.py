@@ -2,7 +2,7 @@
 
 import sys
 
-if len(sys.argv) < 10:
+if len(sys.argv) < 11:
     sys.exit()
 
 odeps = open(sys.argv[1])
@@ -13,6 +13,7 @@ hdir = sys.argv[5]
 srcdir = sys.argv[6].split('/')[-1]
 nbr_dirs = int(sys.argv[7])
 nbr_files = int(sys.argv[8 + nbr_dirs])
+nbr_subs = int(sys.argv[9 + nbr_dirs + nbr_files])
 
 makef = open(projdir + "/Makefile", mode="w")
 
