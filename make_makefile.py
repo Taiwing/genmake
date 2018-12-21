@@ -6,14 +6,13 @@ if len(sys.argv) < 10:
     sys.exit()
 
 odeps = open(sys.argv[1])
-rules = []
-for line in odeps:
-    rules.append(line)
-
 targ_type = sys.argv[2]
 targ_name = sys.argv[3]
 projdir = sys.argv[4]
 hdir = sys.argv[5]
+srcdir = sys.argv[6].split('/')[-1]
+nbr_dirs = int(sys.argv[7])
+nbr_files = int(sys.argv[8 + nbr_dirs])
 
 makef = open(projdir + "/Makefile", mode="w")
 
@@ -30,8 +29,6 @@ if targ_type != "lib" or (len(targ_name) > 2 and targ_name[-2:] == ".a"):
 elif targ_type == "lib":
     makef.write(targ_name + ".a\n\n")
 
-srcdir = sys.argv[6].split('/')[-1]
-nbr_dirs = int(sys.argv[7])
 dirs = []
 for i in range(1, nbr_dirs):
     dirs.append(sys.argv[8 + i].split('/')[-1])
@@ -50,7 +47,6 @@ for direc in dirs:
 if len(dirs) > 0:
     makef.write("\n")
 
-nbr_files = int(sys.argv[8 + nbr_dirs])
 files = {}
 for i in range(0, nbr_dirs - 1):
     files[dirs[i]] = []
@@ -114,6 +110,9 @@ if targ_type == "lib":
 else:
     makef.write("\t$(CC) $(CFLAGS) -o $@ $(patsubst %.o,$(ODIR)/%.o,$(OBJ))\n\n")
 
+rules = []
+for line in odeps:
+    rules.append(line)
 for line in rules:
     if line == rules[-2]:
         break
