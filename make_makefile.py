@@ -34,6 +34,14 @@ dirs = []
 for i in range(1, nbr_dirs):
     dirs.append(sys.argv[8 + i].split('/')[-1])
 
+sub_names = []
+sub_dirs = []
+sub_types = []
+for i in range(0, nbr_subs):
+    sub_names.append(sys.argv[10 + nbr_dirs + nbr_files + i])
+    sub_dirs.append(sys.argv[10 + nbr_dirs + nbr_files + nbr_subs + i])
+    sub_types.append(sys.argv[10 + nbr_dirs + nbr_files + (nbr_subs * 2) + i])
+
 makef.write("############################## SOURCES #########################################\n\n")
 makef.write("SRCDIR\t\t\t=\t" + srcdir + "\n\n")
 for direc in dirs:
@@ -114,7 +122,7 @@ else:
 rules = []
 for line in odeps:
     rules.append(line)
-for line in rules:
+for line in odeps:
     if line == rules[-2]:
         break
     sp = line.split()
