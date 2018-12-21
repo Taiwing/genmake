@@ -139,6 +139,23 @@ while [ "$1" != "" ]; do
 				SUBNAMES+="$1"$'\n'
 			fi
 		done
+		if [ $LEN -lt 4 ]; then
+			LEN=$((LEN-1))
+			if [[ ${OPT:$LEN:1} == "s" ]]; then
+				LEN=$((LEN-1))
+			fi
+			#if we have a subproject provided with only a name ending
+			#whith ".a" the type will default to a library
+			if [[ ${OPT:$LEN:1} == "t" ]]; then
+				SUBNAMES+="default"$'\n'
+			elif [[ ${OPT:$LEN:1} == "n" ]]; then
+				if [ ${#SUBNAMES} -gt 4 ] && [[ ${SUBNAMES:${#SUBNAMES}-3:2} == ".a" ]]; then
+					SUBTYPES+=$'lib\n'
+				else
+					SUBTYPES+=$'exec\n'
+				fi
+			fi
+		fi
 		;;
 	-v | --verbose )
 		VERB=1
