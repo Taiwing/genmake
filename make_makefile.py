@@ -15,21 +15,6 @@ nbr_dirs = int(sys.argv[7])
 nbr_files = int(sys.argv[8 + nbr_dirs])
 nbr_subs = int(sys.argv[9 + nbr_dirs + nbr_files])
 
-makef = open(projdir + "/Makefile", mode="w")
-
-makef.write("############################## COMPILE VAR #####################################\n\n")
-makef.write("CC\t\t\t=\tgcc\n")
-makef.write("CFLAGS\t\t=\t-Wall -Wextra -Werror\n")
-makef.write("#CFLAGS\t\t=\t-g\n")
-makef.write("HDIR\t\t=\t" + hdir)
-makef.write("\nHFLAGS\t\t=\t-I $(HDIR)\n")
-
-makef.write("NAME\t\t=\t")
-if targ_type != "lib" or (len(targ_name) > 2 and targ_name[-2:] == ".a"):
-    makef.write(targ_name + "\n\n")
-elif targ_type == "lib":
-    makef.write(targ_name + ".a\n\n")
-
 sub_names = []
 sub_dirs = []
 sub_types = []
@@ -46,6 +31,23 @@ for i in range(1, nbr_dirs):
         dirs.append(path_dir[-1])
     else:
         dirs.append("DO_NOT_APPEND")
+
+makef = open(projdir + "/Makefile", mode="w")
+
+makef.write("############################## COMPILE VAR #####################################\n\n")
+makef.write("CC\t\t\t=\tgcc\n")
+makef.write("CFLAGS\t\t=\t-Wall -Wextra -Werror\n")
+makef.write("#CFLAGS\t\t=\t-g\n")
+makef.write("HDIR\t\t=\t" + hdir)
+#for i in range(0, nbr_subs):
+#    makef.write("HDIR\t\t=\t" + hdir)
+makef.write("\nHFLAGS\t\t=\t-I $(HDIR)\n")
+
+makef.write("NAME\t\t=\t")
+if targ_type != "lib" or (len(targ_name) > 2 and targ_name[-2:] == ".a"):
+    makef.write(targ_name + "\n\n")
+elif targ_type == "lib":
+    makef.write(targ_name + ".a\n\n")
 
 makef.write("############################## SOURCES #########################################\n\n")
 makef.write("SRCDIR\t\t\t=\t" + srcdir + "\n\n")
@@ -108,7 +110,7 @@ for i in range(0, nbr_dirs - 1):
 if real_nbr_dirs > 1:
     first_line = 1
     for i in range(0, len(dirs)):
-        if dirs[i] != "DO_NOT_APPEND" or dirs[i] not in sub_dirs:
+        if dirs[i] != "DO_NOT_APPEND" and dirs[i] not in sub_dirs:
             if first_line:
                 makef.write("OBJ\t\t\t\t=\t$(patsubst %.c,%.o,$(" + dirs[i].upper() + "C))\\\n")
                 first_line = 0
@@ -123,7 +125,8 @@ makef.write("\n")
 makef.write("vpath\t\t\t%.o\t$(ODIR)\n")
 makef.write("vpath\t\t\t%.h\t$(HDIR)\n")
 for direc in dirs:
-    makef.write("vpath\t\t\t%.c\t$(SRCDIR)/$(" + direc.upper() + "DIR)\n")
+    if direc != "DO_NOT_APPEND" and direc not in sub_dirs:
+        makef.write("vpath\t\t\t%.c\t$(SRCDIR)/$(" + direc.upper() + "DIR)\n")
 if len(files[srcdir]) > 0:
     makef.write("vpath\t\t\t%.c\t$(SRCDIR)\n")
 
