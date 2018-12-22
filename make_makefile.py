@@ -45,7 +45,10 @@ makef.write("#CFLAGS\t\t=\t-g\n")
 makef.write("HDIR\t\t=\t" + hdir + "\n")
 for i in range(0, nbr_subs):
     makef.write(gmu.replace_by(sub_dirs[i], "\\ ", "_").upper() + "H\t\t=\t" + sub_dirs[i] + "/includes\n")
-makef.write("HFLAGS\t\t=\t-I $(HDIR)\n")
+makef.write("HFLAGS\t\t=\t-I $(HDIR)")
+for i in range(0, nbr_subs):
+    makef.write(" -I $(" + gmu.replace_by(sub_dirs[i], "\\ ", "_").upper() + "H)")
+makef.write("\n")
 
 makef.write("NAME\t\t=\t")
 if targ_type != "lib" or (len(targ_name) > 2 and targ_name[-2:] == ".a"):
@@ -146,7 +149,7 @@ else:
 rules = []
 for line in odeps:
     rules.append(line)
-for line in odeps:
+for line in rules:
     if line == rules[-2]:
         break
     sp = line.split()
