@@ -12,20 +12,27 @@ rules = []
 for line in file:
     rules.append(line)
 
-new = open(name, mode="w")
+res = []
 for line in rules:
-    skip = 0
+    skip_nl = 0
+#    skip_line = 0
+    result = ''
     lst = line.split()
     for word in lst:
         if word[-3:] == ".o:":
-            new.write(word)
+            result += word
         elif word[-2:] == ".h" or word[-2:] == ".c":
-            new.write(' ')
+            result += ' '
             path = word.split('/')
-            new.write(path[-1])
+            result += path[-1]
         elif word == "\\":
-            skip = 1;
-    if skip == 0:
-        new.write('\n')
+            skip_nl = 1;
+    if skip_nl == 0:
+        result += '\n'
+    res.append(result)
+
+new = open(name, mode="w")
+for line in res:
+    new.write(line)
 new.write("%.o: %.c\n")
 new.write("\t$(CC) -c $(CFLAGS) $< $(HFLAGS) -o $(ODIR)/$@\n")

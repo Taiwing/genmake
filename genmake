@@ -251,4 +251,3 @@ if [ $ERR != 0 ]; then
 else
 	printf "Makefile ready !\n"
 fi
-
