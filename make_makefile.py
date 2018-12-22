@@ -36,6 +36,11 @@ for i in range(1, nbr_dirs):
     else:
         dirs.append("DO_NOT_APPEND")
 
+real_nbr_dirs = nbr_dirs
+for i in range(0, nbr_dirs - 1):
+    if dirs[i] == "DO_NOT_APPEND" or dirs[i] in sub_dirs:
+        real_nbr_dirs -= 1
+
 makef = open(projdir + "/Makefile", mode="w")
 
 makef.write("############################## COMPILE VAR #####################################\n\n")
@@ -44,10 +49,10 @@ makef.write("CFLAGS\t\t=\t-Wall -Wextra -Werror\n")
 makef.write("#CFLAGS\t\t=\t-g\n")
 makef.write("HDIR\t\t=\t" + hdir + "\n")
 for i in range(0, nbr_subs):
-    makef.write(gmu.replace_by(sub_dirs[i], "\\ ", "_").upper() + "H\t\t=\t" + sub_dirs[i] + "/includes\n")
+    makef.write(gmu.replace_by(sub_dirs[i], "\\ ", "_").upper() + "D\t\t=\t" + sub_dirs[i] + "\n")
 makef.write("HFLAGS\t\t=\t-I $(HDIR)")
 for i in range(0, nbr_subs):
-    makef.write(" -I $(" + gmu.replace_by(sub_dirs[i], "\\ ", "_").upper() + "H)")
+    makef.write(" -I $(" + gmu.replace_by(sub_dirs[i], "\\ ", "_").upper() + "D)/$(HDIR)")
 makef.write("\n")
 
 makef.write("NAME\t\t=\t")
@@ -68,7 +73,7 @@ for direc in dirs:
         else:
             makef.write("DIR\t=\t")
         makef.write(direc + "\n")
-if len(dirs) > 0:
+if real_nbr_dirs > 1:
     makef.write("\n")
 
 files = {}
@@ -110,10 +115,6 @@ for i in range(0, nbr_dirs - 1):
         makef.write("\n")
 
 makef.write("ODIR\t\t\t=\tobj\n")
-real_nbr_dirs = nbr_dirs
-for i in range(0, nbr_dirs - 1):
-    if dirs[i] == "DO_NOT_APPEND" or dirs[i] in sub_dirs:
-        real_nbr_dirs -= 1
 if real_nbr_dirs > 1:
     first_line = 1
     for i in range(0, len(dirs)):
@@ -139,12 +140,19 @@ if len(files[srcdir]) > 0:
 
 makef.write("\n############################## BUILD ###########################################\n\n")
 makef.write("all: $(NAME)\n\n")
-makef.write("$(NAME): $(ODIR) $(OBJ)\n")
+makef.write("$(NAME): ")
+for project in sub_names:
+    makef.write(project + " ")
+makef.write("$(ODIR) $(OBJ)\n")
 if targ_type == "lib":
     makef.write("\tar rc $@ $(patsubst %.o,$(ODIR)/%.o,$(OBJ))\n")
     makef.write("\tranlib $@\n\n")
 else:
     makef.write("\t$(CC) $(CFLAGS) -o $@ $(patsubst %.o,$(ODIR)/%.o,$(OBJ))\n\n")
+
+for i in range(0, nbr_subs):
+    makef.write(sub_names[i] + ":\n")
+    makef.write("\tmake -C $(SRCDIR)/$(" + gmu.replace_by(sub_dirs[i], "\\ ", "_").upper() + "D)\n\n")
 
 rules = []
 for line in odeps:
