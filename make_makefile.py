@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import sys
+import genmake_utils as gmu
 
 if len(sys.argv) < 11:
     sys.exit()
@@ -21,6 +22,9 @@ sub_types = []
 for i in range(0, nbr_subs):
     sub_names.append(sys.argv[10 + nbr_dirs + nbr_files + i])
     sub_dirs.append(sys.argv[10 + nbr_dirs + nbr_files + nbr_subs + i])
+    if gmu.is_quoted(sub_dirs[i]):
+        sub_dirs[i] = gmu.replace_by(sub_dirs[i], "\"")
+        sub_dirs[i] = gmu.replace_by(sub_dirs[i], " ", "\\ ")
     sub_types.append(sys.argv[10 + nbr_dirs + nbr_files + (nbr_subs * 2) + i])
 
 dirs = []
@@ -38,10 +42,10 @@ makef.write("############################## COMPILE VAR ########################
 makef.write("CC\t\t\t=\tgcc\n")
 makef.write("CFLAGS\t\t=\t-Wall -Wextra -Werror\n")
 makef.write("#CFLAGS\t\t=\t-g\n")
-makef.write("HDIR\t\t=\t" + hdir)
-#for i in range(0, nbr_subs):
-#    makef.write("HDIR\t\t=\t" + hdir)
-makef.write("\nHFLAGS\t\t=\t-I $(HDIR)\n")
+makef.write("HDIR\t\t=\t" + hdir + "\n")
+for i in range(0, nbr_subs):
+    makef.write(gmu.replace_by(sub_dirs[i], "\\ ", "_").upper() + "H\t\t=\t" + sub_dirs[i] + "/includes\n")
+makef.write("HFLAGS\t\t=\t-I $(HDIR)\n")
 
 makef.write("NAME\t\t=\t")
 if targ_type != "lib" or (len(targ_name) > 2 and targ_name[-2:] == ".a"):
