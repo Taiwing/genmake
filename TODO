@@ -4,7 +4,6 @@
   with an error being printed. It should also leave if subfolders exist beyond
   the first level and that they are not declared as subprojects or if the
   --recursive option is not set
-- handle subprojects beyond the option parser (add the rules in the makefiles)
 - create a --recursive option to create makefiles recursively if subproject are
   declared (options from the first genmake call will have to be passed) and
   maybe another one to prevent genmake from getting into certain subfolders

@@ -26,6 +26,8 @@ for i in range(0, nbr_subs):
         sub_dirs[i] = gmu.replace_by(sub_dirs[i], "\"")
         sub_dirs[i] = gmu.replace_by(sub_dirs[i], " ", "\\ ")
     sub_types.append(sys.argv[10 + nbr_dirs + nbr_files + (nbr_subs * 2) + i])
+    if sub_types[i] == "lib" and sub_names[i][-2:] != ".a":
+        sub_names[i] += ".a"
 
 dirs = []
 pathlen = len(projdir.split('/'))
