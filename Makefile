@@ -6,7 +6,7 @@
 #    By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/12/14 22:53:56 by yforeau           #+#    #+#              #
-#    Updated: 2018/12/22 03:59:11 by yforeau          ###   ########.fr        #
+#    Updated: 2018/12/22 04:34:50 by yforeau          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,7 +60,7 @@ vpath	%.c	$(DIRS)
 all: debug $(NAME)
 
 $(NAME): odeps
-	./format_odeps.py odeps
+	./format_odeps.py odeps $(PROJDIR) $(SRCDIR) $(SUBCOUNT) $(SUBPATHS)
 	./make_makefile.py odeps $(TYPE) $(TARG) $(PROJDIR) $(HDIR) $(SRCDIR)\
 		$(NBRDIRS) $(DIRS) $(NBRCF) $(CFILES) $(SUBCOUNT) $(SUBNAMES)\
 		$(SUBPATHS) $(SUBTYPES)
