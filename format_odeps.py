@@ -37,9 +37,6 @@ for line in rules:
     result = ''
     lst = line.split()
     for word in lst:
-        if word[-2:] == ".c":
-            is_it = gmu.is_file_in_subdir(dirs, word.split("/"))
-            print("is c file in subdir: " + str(is_it))
         if word[-3:] == ".o:":
             result += word
         elif word[-2:] == ".c" and nbr_subs > 0 and gmu.is_file_in_subdir(dirs, word.split("/")) != 0:

@@ -21,7 +21,7 @@ sub_dirs = []
 sub_types = []
 for i in range(0, nbr_subs):
     sub_names.append(sys.argv[10 + nbr_dirs + nbr_files + i])
-    sub_dirs.append(sys.argv[10 + nbr_dirs + nbr_files + nbr_subs + i])
+    sub_dirs.append(sys.argv[10 + nbr_dirs + nbr_files + nbr_subs + i].split('/')[1])
     if gmu.is_quoted(sub_dirs[i]):
         sub_dirs[i] = gmu.replace_by(sub_dirs[i], "\"")
         sub_dirs[i] = gmu.replace_by(sub_dirs[i], " ", "\\ ")
@@ -31,6 +31,9 @@ for i in range(0, nbr_subs):
 
 dirs = []
 pathlen = len(projdir.split('/'))
+print(projdir)
+print(projdir.split('/'))
+print(str(pathlen))
 for i in range(1, nbr_dirs):
     path_dir = sys.argv[8 + i].split('/')
     if len(path_dir) == pathlen + 2:
@@ -51,10 +54,10 @@ makef.write("CFLAGS\t\t=\t-Wall -Wextra -Werror\n")
 makef.write("#CFLAGS\t\t=\t-g\n")
 makef.write("HDIR\t\t=\t" + hdir + "\n")
 for i in range(0, nbr_subs):
-    makef.write(gmu.replace_by(sub_dirs[i], "\\ ", "_").upper() + "D\t\t=\t" + sub_dirs[i] + "\n")
+    makef.write("SUB" + str(i + 1) + "D\t\t=\t" + sub_dirs[i] + "\n")
 makef.write("HFLAGS\t\t=\t-I $(HDIR)")
 for i in range(0, nbr_subs):
-    makef.write(" -I $(" + gmu.replace_by(sub_dirs[i], "\\ ", "_").upper() + "D)/$(HDIR)")
+    makef.write(" -I $(SUB" + str(i + 1) + "D)/$(HDIR)")
 makef.write("\n")
 
 makef.write("NAME\t\t=\t")
@@ -86,10 +89,15 @@ files[srcdir] = []
 
 for i in range(0, nbr_files):
     raw = sys.argv[9 + nbr_dirs + i].split('/')
-    if raw[-2] == "":
+    print(raw) #debug
+    if len(raw) == pathlen + 2:
         files[srcdir].append(raw[-1])
-    elif raw[-2] in files:
-        files[raw[-2]].append(raw[-1])
+    elif raw[pathlen + 1] in files:
+        files[raw[pathlen + 1]].append(raw[-1])
+#    if raw[-2] == "":
+#        files[srcdir].append(raw[-1])
+#    elif raw[-2] in files:
+#        files[raw[-2]].append(raw[-1])
 
 if len(files[srcdir]) > 0:
     makef.write(srcdir.upper() + "C\t\t\t=\t")
@@ -154,7 +162,7 @@ else:
 
 for i in range(0, nbr_subs):
     makef.write(sub_names[i] + ":\n")
-    makef.write("\tmake -C $(SRCDIR)/$(" + gmu.replace_by(sub_dirs[i], "\\ ", "_").upper() + "D)\n\n")
+    makef.write("\tmake -C $(SRCDIR)/$(SUB" + str(i + 1) + "D)\n\n")
 
 rules = []
 for line in odeps:
