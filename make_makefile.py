@@ -210,7 +210,10 @@ makef.write("\tmkdir -p $@\n\n")
 
 makef.write("############################## CLEANUP #########################################\n\n")
 makef.write("clean:\n")
-makef.write("\trm -rf $(ODIR)\n\n")
+makef.write("\trm -rf $(ODIR)\n")
+for i in range(0, len(sub_dirs)):
+    makef.write("\tmake -C $(SRCDIR)/$(SUB" + str(i + 1) + "D) fclean\n")
+makef.write("\n")
 
 makef.write("fclean: clean\n")
 makef.write("\trm -f $(NAME)\n\n")
