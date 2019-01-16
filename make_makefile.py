@@ -31,9 +31,6 @@ for i in range(0, nbr_subs):
 
 dirs = []
 pathlen = len(projdir.split('/'))
-print(projdir)
-print(projdir.split('/'))
-print(str(pathlen))
 for i in range(1, nbr_dirs):
     path_dir = sys.argv[8 + i].split('/')
     if len(path_dir) == pathlen + 2:
@@ -53,12 +50,22 @@ makef.write("CC\t\t\t=\tgcc\n")
 makef.write("CFLAGS\t\t=\t-Wall -Wextra -Werror\n")
 makef.write("#CFLAGS\t\t=\t-g\n")
 makef.write("HDIR\t\t=\t" + hdir + "\n")
+makef.write("SRCDIR\t\t=\t" + srcdir + "\n")
 for i in range(0, nbr_subs):
     makef.write("SUB" + str(i + 1) + "D\t\t=\t" + sub_dirs[i] + "\n")
 makef.write("HFLAGS\t\t=\t-I $(HDIR)")
 for i in range(0, nbr_subs):
-    makef.write(" -I $(SUB" + str(i + 1) + "D)/$(HDIR)")
+    if sub_types[i] == "lib":
+        makef.write(" -I $(SRCDIR)/$(SUB" + str(i + 1) + "D)/$(HDIR)")
 makef.write("\n")
+if nbr_subs > 0 and "lib" in sub_types:
+    makef.write("LIBS\t\t=\t")
+    for i in range(0, nbr_subs):
+        if sub_types[i] == "lib":
+            makef.write("$(SRCDIR)/$(SUB" + str(i + 1) + "D)/" + sub_names[i])
+        if i < nbr_subs - 1 and "lib" in sub_types[i + 1:]:
+            makef.write(' ')
+    makef.write('\n')
 
 makef.write("NAME\t\t=\t")
 if targ_type != "lib" or (len(targ_name) > 2 and targ_name[-2:] == ".a"):
@@ -67,7 +74,6 @@ elif targ_type == "lib":
     makef.write(targ_name + ".a\n\n")
 
 makef.write("############################## SOURCES #########################################\n\n")
-makef.write("SRCDIR\t\t\t=\t" + srcdir + "\n\n")
 for direc in dirs:
     if direc != "DO_NOT_APPEND" and direc not in sub_dirs:
         makef.write(direc.upper())
@@ -89,15 +95,10 @@ files[srcdir] = []
 
 for i in range(0, nbr_files):
     raw = sys.argv[9 + nbr_dirs + i].split('/')
-    print(raw) #debug
     if len(raw) == pathlen + 2:
         files[srcdir].append(raw[-1])
     elif raw[pathlen + 1] in files:
         files[raw[pathlen + 1]].append(raw[-1])
-#    if raw[-2] == "":
-#        files[srcdir].append(raw[-1])
-#    elif raw[-2] in files:
-#        files[raw[-2]].append(raw[-1])
 
 if len(files[srcdir]) > 0:
     makef.write(srcdir.upper() + "C\t\t\t=\t")
@@ -142,6 +143,9 @@ makef.write("\n")
 
 makef.write("vpath\t\t\t%.o\t$(ODIR)\n")
 makef.write("vpath\t\t\t%.h\t$(HDIR)\n")
+for i in range(0, len(sub_dirs)):
+    if sub_types[i] == "lib":
+        makef.write("vpath\t\t\t%.h\t$(SRCDIR)/$(SUB" + str(i + 1) + "D)/$(HDIR)\n")
 for direc in dirs:
     if direc != "DO_NOT_APPEND" and direc not in sub_dirs:
         makef.write("vpath\t\t\t%.c\t$(SRCDIR)/$(" + direc.upper() + "DIR)\n")
@@ -158,7 +162,11 @@ if targ_type == "lib":
     makef.write("\tar rc $@ $(patsubst %.o,$(ODIR)/%.o,$(OBJ))\n")
     makef.write("\tranlib $@\n\n")
 else:
-    makef.write("\t$(CC) $(CFLAGS) -o $@ $(patsubst %.o,$(ODIR)/%.o,$(OBJ))\n\n")
+    makef.write("\t$(CC) $(CFLAGS) -o $@ $(patsubst %.o,$(ODIR)/%.o,$(OBJ))")
+    if nbr_subs > 0 and "lib" in sub_types:
+        makef.write(" $(LIBS)\n\n")
+    else:
+        makef.write("\n\n")
 
 for i in range(0, nbr_subs):
     makef.write(sub_names[i] + ":\n")
