@@ -11,5 +11,8 @@
   genmake's requirements, it should move every header to a includes/ directory
   that will be created if it doesn't exist, and also every C files/C folders
   to a src/ dir. It should also change the #include directives if they refer
-  to a header in includes/ with a path so that it only takes the name. this
-  option should work with 
+  to a header in includes/ with a path so that it only takes the name.
+- handle subprojects completely and add a "fuselib" option to compile every
+  sub libraries into one, to get rid of dependency issues (like if ft_printf
+  depends on libft, and as does the main project which depends on ft_printf
+  and another subproject, so how do I handle libft ?) 
