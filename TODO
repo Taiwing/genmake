@@ -15,4 +15,5 @@
 - handle subprojects completely and add a "fuselib" option to compile every
   sub libraries into one, to get rid of dependency issues (like if ft_printf
   depends on libft, and as does the main project which depends on ft_printf
-  and another subproject, so how do I handle libft ?) 
+  and another subproject, so how do I handle libft ?)
+  - handle sub includes directories
