@@ -17,3 +17,4 @@
   depends on libft, and as does the main project which depends on ft_printf
   and another subproject, so how do I handle libft ?)
   - handle sub includes directories
+  - eventually handle more than one level sources
