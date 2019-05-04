@@ -1,8 +1,3 @@
-
-#very fucking important
-- make relinks on subprojects because they are not listed as sources
-	fix this shit
-
 - add an auto-update/auto-install script
 - check that a directory is well formated (check_format.py script)
 - If it is not well formatted and that --format is not set, it should leave

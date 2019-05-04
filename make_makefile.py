@@ -155,8 +155,8 @@ if len(files[srcdir]) > 0:
 makef.write("\n############################## BUILD ###########################################\n\n")
 makef.write("all: $(NAME)\n\n")
 makef.write("$(NAME): ")
-for project in sub_names:
-    makef.write(project + " ")
+for i in range(0, nbr_subs):
+    makef.write("$(SRCDIR)/$(SUB" + str(i + 1) + "D)/" + sub_names[i] + " ")
 makef.write("$(ODIR) $(OBJ)\n")
 if targ_type == "lib":
     makef.write("\tar rc $@ $(patsubst %.o,$(ODIR)/%.o,$(OBJ))\n")
@@ -169,7 +169,7 @@ else:
         makef.write("\n\n")
 
 for i in range(0, nbr_subs):
-    makef.write(sub_names[i] + ":\n")
+    makef.write("$(SRCDIR)/$(SUB" + str(i + 1) + "D)/" + sub_names[i] + ":\n")
     makef.write("\tmake -C $(SRCDIR)/$(SUB" + str(i + 1) + "D)\n\n")
 
 rules = []
