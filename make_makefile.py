@@ -202,8 +202,7 @@ for line in rules:
                     else:
                         makef.write(sp[i])
         makef.write("\n")
-makef.write(rules[-2] + rules[-1])
-makef.write("\n")
+makef.write(rules[-2] + "\t@mkdir -p $(ODIR)\n" + rules[-1] + "\n")
 
 makef.write("$(ODIR):\n")
 makef.write("\tmkdir -p $@\n\n")
