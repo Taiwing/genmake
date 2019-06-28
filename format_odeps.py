@@ -3,20 +3,24 @@
 import sys
 import genmake_utils as gmu
 
+################################ get arguments #################################
+
 if len(sys.argv) < 5:
     sys.exit()
 
 name = sys.argv[1]
-projd = sys.argv[2].split('/')
+projdir = sys.argv[2].split('/')
 srcdir = sys.argv[3]
-nbr_subs = int(sys.argv[4])
-dirs = []
-for i in range(0, nbr_subs):
-    cur = list(projd)
+subcount = int(sys.argv[4])
+subpaths = []
+for i in range(0, subcount):
+    cur = list(projdir)
     sub = sys.argv[5 + i].split('/')
     for j in range(0, len(sub)):
         cur.append(sub[j])
-    dirs.append(cur)
+    subpaths.append(cur)
+
+############################### load odeps file ################################
 
 file = open(name)
 temp = ""
@@ -30,6 +34,8 @@ for line in file:
         rules.append(temp + line)
         temp = ""
 
+################################# format odeps #################################
+
 res = []
 for line in rules:
     skip_nl = 0
@@ -39,7 +45,7 @@ for line in rules:
     for word in lst:
         if word[-3:] == ".o:":
             result += word
-        elif word[-2:] == ".c" and nbr_subs > 0 and gmu.is_file_in_subdir(dirs, word.split("/")) != 0:
+        elif word[-2:] == ".c" and subcount > 0 and gmu.is_file_in_subdir(subpaths, word.split("/")) != 0:
             skip_line = 1
         elif word[-2:] == ".h" or word[-2:] == ".c":
             result += ' '
@@ -51,6 +57,8 @@ for line in rules:
         result += '\n'
     if skip_line == 0:
         res.append(result)
+
+################################# write odeps ##################################
 
 new = open(name, mode="w")
 for line in res:

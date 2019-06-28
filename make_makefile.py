@@ -3,6 +3,8 @@
 import sys
 import genmake_utils as gmu
 
+################################ get arguments #################################
+
 if len(sys.argv) < 11:
     sys.exit()
 
@@ -21,7 +23,7 @@ sub_dirs = []
 sub_types = []
 for i in range(0, nbr_subs):
     sub_names.append(sys.argv[10 + nbr_dirs + nbr_files + i])
-    sub_dirs.append(sys.argv[10 + nbr_dirs + nbr_files + nbr_subs + i].split('/')[1])
+    sub_dirs.append(sys.argv[10 + nbr_dirs + nbr_files + nbr_subs + i])
     if gmu.is_quoted(sub_dirs[i]):
         sub_dirs[i] = gmu.replace_by(sub_dirs[i], "\"")
         sub_dirs[i] = gmu.replace_by(sub_dirs[i], " ", "\\ ")
@@ -33,15 +35,17 @@ dirs = []
 pathlen = len(projdir.split('/'))
 for i in range(1, nbr_dirs):
     path_dir = sys.argv[8 + i].split('/')
-    if len(path_dir) == pathlen + 2:
+    if len(path_dir) == pathlen + 2 and srcdir + "/" + path_dir[-1] not in sub_dirs:
         dirs.append(path_dir[-1])
     else:
         dirs.append("DO_NOT_APPEND")
 
 real_nbr_dirs = nbr_dirs
 for i in range(0, nbr_dirs - 1):
-    if dirs[i] == "DO_NOT_APPEND" or dirs[i] in sub_dirs:
+    if dirs[i] == "DO_NOT_APPEND":
         real_nbr_dirs -= 1
+
+################################ write makefile ################################
 
 makef = open(projdir + "/Makefile", mode="w")
 
@@ -56,13 +60,13 @@ for i in range(0, nbr_subs):
 makef.write("HFLAGS\t\t=\t-I $(HDIR)")
 for i in range(0, nbr_subs):
     if sub_types[i] == "lib":
-        makef.write(" -I $(SRCDIR)/$(SUB" + str(i + 1) + "D)/$(HDIR)")
+        makef.write(" -I $(SUB" + str(i + 1) + "D)/$(HDIR)")
 makef.write("\n")
 if nbr_subs > 0 and "lib" in sub_types:
     makef.write("LIBS\t\t=\t")
     for i in range(0, nbr_subs):
         if sub_types[i] == "lib":
-            makef.write("$(SRCDIR)/$(SUB" + str(i + 1) + "D)/" + sub_names[i])
+            makef.write("$(SUB" + str(i + 1) + "D)/" + sub_names[i])
         if i < nbr_subs - 1 and "lib" in sub_types[i + 1:]:
             makef.write(' ')
     makef.write('\n')
@@ -75,7 +79,7 @@ elif targ_type == "lib":
 
 makef.write("############################## SOURCES #########################################\n\n")
 for direc in dirs:
-    if direc != "DO_NOT_APPEND" and direc not in sub_dirs:
+    if direc != "DO_NOT_APPEND":
         makef.write(direc.upper())
         if len(direc) < 5:
            makef.write("DIR\t\t\t=\t")
@@ -110,7 +114,7 @@ if len(files[srcdir]) > 0:
     makef.write("\n")
 
 for i in range(0, nbr_dirs - 1):
-    if dirs[i] != "DO_NOT_APPEND" and dirs[i] not in sub_dirs:
+    if dirs[i] != "DO_NOT_APPEND":
         makef.write(dirs[i].upper() + "C")
         if len(dirs[i]) < 3:
             makef.write("\t\t\t\t=\t")
@@ -145,9 +149,9 @@ makef.write("vpath\t\t\t%.o\t$(ODIR)\n")
 makef.write("vpath\t\t\t%.h\t$(HDIR)\n")
 for i in range(0, len(sub_dirs)):
     if sub_types[i] == "lib":
-        makef.write("vpath\t\t\t%.h\t$(SRCDIR)/$(SUB" + str(i + 1) + "D)/$(HDIR)\n")
+        makef.write("vpath\t\t\t%.h\t$(SUB" + str(i + 1) + "D)/$(HDIR)\n")
 for direc in dirs:
-    if direc != "DO_NOT_APPEND" and direc not in sub_dirs:
+    if direc != "DO_NOT_APPEND":
         makef.write("vpath\t\t\t%.c\t$(SRCDIR)/$(" + direc.upper() + "DIR)\n")
 if len(files[srcdir]) > 0:
     makef.write("vpath\t\t\t%.c\t$(SRCDIR)\n")
@@ -156,7 +160,7 @@ makef.write("\n############################## BUILD ############################
 makef.write("all: $(NAME)\n\n")
 makef.write("$(NAME): ")
 for i in range(0, nbr_subs):
-    makef.write("$(SRCDIR)/$(SUB" + str(i + 1) + "D)/" + sub_names[i] + " ")
+    makef.write("$(SUB" + str(i + 1) + "D)/" + sub_names[i] + " ")
 makef.write("$(ODIR) $(OBJ)\n")
 if targ_type == "lib":
     makef.write("\tar rc $@ $(patsubst %.o,$(ODIR)/%.o,$(OBJ))\n")
@@ -169,8 +173,8 @@ else:
         makef.write("\n\n")
 
 for i in range(0, nbr_subs):
-    makef.write("$(SRCDIR)/$(SUB" + str(i + 1) + "D)/" + sub_names[i] + ":\n")
-    makef.write("\tmake -C $(SRCDIR)/$(SUB" + str(i + 1) + "D)\n\n")
+    makef.write("$(SUB" + str(i + 1) + "D)/" + sub_names[i] + ":\n")
+    makef.write("\tmake -C $(SUB" + str(i + 1) + "D)\n\n")
 
 rules = []
 for line in odeps:
@@ -211,7 +215,7 @@ makef.write("############################## CLEANUP ############################
 makef.write("clean:\n")
 makef.write("\trm -rf $(ODIR)\n")
 for i in range(0, len(sub_dirs)):
-    makef.write("\tmake -C $(SRCDIR)/$(SUB" + str(i + 1) + "D) fclean\n")
+    makef.write("\tmake -C $(SUB" + str(i + 1) + "D) fclean\n")
 makef.write("\n")
 
 makef.write("fclean: clean\n")
