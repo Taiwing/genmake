@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 def is_quoted(string):
     return (string[0] == "\"" and string[-1] == "\"")
