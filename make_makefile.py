@@ -51,8 +51,8 @@ makef = open(projdir + "/Makefile", mode="w")
 
 makef.write("############################## COMPILE VAR #####################################\n\n")
 makef.write("CC\t\t\t=\tgcc\n")
-makef.write("CFLAGS\t\t=\t-Wall -Wextra -Werror\n")
-makef.write("#CFLAGS\t\t=\t-g -Wall -Wextra -Werror -fsanitize=address,undefined\n")
+makef.write("#CFLAGS\t\t=\t-Wall -Wextra -Werror\n")
+makef.write("CFLAGS\t\t=\t-g -Wall -Wextra -Werror -fsanitize=address,undefined\n")
 makef.write("HDIR\t\t=\t" + hdir + "\n")
 makef.write("SRCDIR\t\t=\t" + srcdir + "\n")
 for i in range(0, nbr_subs):
