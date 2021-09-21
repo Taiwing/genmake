@@ -5,7 +5,7 @@ import genmake_utils as gmu
 
 ################################ get arguments #################################
 
-if len(sys.argv) < 12:
+if len(sys.argv) < 13:
     sys.exit()
 
 odeps = open(sys.argv[1])
@@ -15,27 +15,28 @@ projdir = sys.argv[4]
 hdir = sys.argv[5]
 srcdir = sys.argv[6].split('/')[-1]
 flags = sys.argv[7]
-nbr_dirs = int(sys.argv[8])
-nbr_files = int(sys.argv[9 + nbr_dirs])
-nbr_subs = int(sys.argv[10 + nbr_dirs + nbr_files])
+dev_flags = sys.argv[8]
+nbr_dirs = int(sys.argv[9])
+nbr_files = int(sys.argv[10 + nbr_dirs])
+nbr_subs = int(sys.argv[11 + nbr_dirs + nbr_files])
 
 sub_names = []
 sub_dirs = []
 sub_types = []
 for i in range(0, nbr_subs):
-    sub_names.append(sys.argv[11 + nbr_dirs + nbr_files + i])
-    sub_dirs.append(sys.argv[11 + nbr_dirs + nbr_files + nbr_subs + i])
+    sub_names.append(sys.argv[12 + nbr_dirs + nbr_files + i])
+    sub_dirs.append(sys.argv[12 + nbr_dirs + nbr_files + nbr_subs + i])
     if gmu.is_quoted(sub_dirs[i]):
         sub_dirs[i] = gmu.replace_by(sub_dirs[i], "\"")
         sub_dirs[i] = gmu.replace_by(sub_dirs[i], " ", "\\ ")
-    sub_types.append(sys.argv[11 + nbr_dirs + nbr_files + (nbr_subs * 2) + i])
+    sub_types.append(sys.argv[12 + nbr_dirs + nbr_files + (nbr_subs * 2) + i])
     if sub_types[i] == "lib" and sub_names[i][-2:] != ".a":
         sub_names[i] += ".a"
 
 dirs = []
 pathlen = len(projdir.split('/'))
 for i in range(1, nbr_dirs):
-    path_dir = sys.argv[9 + i].split('/')
+    path_dir = sys.argv[10 + i].split('/')
     if len(path_dir) == pathlen + 2 and srcdir + "/" + path_dir[-1] not in sub_dirs:
         dirs.append(path_dir[-1])
     else:
@@ -53,7 +54,6 @@ makef = open(projdir + "/Makefile", mode="w")
 makef.write("############################## COMPILE VAR #####################################\n\n")
 makef.write("CC\t\t\t=\tgcc\n")
 makef.write("#CFLAGS\t\t=\t" + flags + "\n")
-dev_flags = "-g -fsanitize=address,undefined"
 makef.write("CFLAGS\t\t=\t" + flags + " " + dev_flags + "\n")
 makef.write("HDIR\t\t=\t" + hdir + "\n")
 makef.write("SRCDIR\t\t=\t" + srcdir + "\n")
@@ -100,7 +100,7 @@ for i in range(0, nbr_dirs - 1):
 files[srcdir] = []
 
 for i in range(0, nbr_files):
-    raw = sys.argv[10 + nbr_dirs + i].split('/')
+    raw = sys.argv[11 + nbr_dirs + i].split('/')
     if len(raw) == pathlen + 2:
         files[srcdir].append(raw[-1])
     elif raw[pathlen + 1] in files:

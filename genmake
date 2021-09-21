@@ -7,13 +7,15 @@ PWDIR=$PROJDIR
 TYPE="exec"
 NAME="exec"
 FLAGS="-Wall -Wextra -Werror"
+DEVFLAGS="-g -fsanitize=address,undefined"
 
 ################################# utils ########################################
 
 function usage {
 	cat << EOF
 Usage:
-    genmake [path] [-vdh] [-t type] [-n name] [-s[t | n | tn] path]
+    genmake [-t type] [-n name] [-f flags] [-D devflags] [-s[t | n | tn] path]
+	genmake [-vdh] [path]
 
 Options:
     -h, --help
@@ -44,6 +46,9 @@ Options:
 
     -f, --flags
         Set Makefile's CFLAGS to a custom value.
+
+    -D, --devflags
+        Set flags to add to Makefile's CFLAGS for uncommented version (dev).
 EOF
 }
 
@@ -198,6 +203,10 @@ while [ "$1" != "" ]; do
 		shift
 		FLAGS=$1
 		;;
+	-D | --devflags )
+		shift
+		DEVFLAGS=$1
+		;;
 	* )
 		if [ "$PROJDIR" != "$PWDIR" ]; then
 			echo "genmake: \""$1"\" is not a valid argument or option."
@@ -241,6 +250,7 @@ if [ $VERB != 0 ]; then
 	printf "SUBTYPES: %s\n" $SUBTYPES
 	printf "SUBNAMES: %s\n" $SUBNAMES
 	printf "FLAGS: %s\n" $FLAGS
+	printf "DEVFLAGS: %s\n" $DEVFLAGS
 fi
 
 ############################## make makefile ###################################
@@ -252,13 +262,13 @@ printf "making Makefile...\n"
 if [ $DEBUG != 0 ]; then
 	make -C $GMDIR PROJDIR=$PROJDIR TYPE=$TYPE TARG=$NAME DEBUG=$DEBUG\
 		SUBCOUNT=$SUBCOUNT SUBPATHS=$SUBPATHS SUBTYPES=$SUBTYPES\
-		SUBNAMES=$SUBNAMES FLAGS=$FLAGS
+		SUBNAMES=$SUBNAMES FLAGS=$FLAGS DEVFLAGS=$DEVFLAGS
 	ERR=$?
 	rm -f $GMDIR/odeps
 else
 	make -C $GMDIR PROJDIR=$PROJDIR TYPE=$TYPE TARG=$NAME SUBCOUNT=$SUBCOUNT\
 		SUBPATHS=$SUBPATHS SUBTYPES=$SUBTYPES SUBNAMES=$SUBNAMES\
-		FLAGS=$FLAGS > /dev/null
+		FLAGS=$FLAGS DEVFLAGS=$DEVFLAGS > /dev/null
 	ERR=$?
 	rm -f $GMDIR/odeps > /dev/null
 fi

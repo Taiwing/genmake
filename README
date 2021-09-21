@@ -14,7 +14,8 @@ Pre-requisites:
   produce a working makefile for the project
 
 Usage:
-    genmake [path] [-vdh] [-t type] [-n name] [-s[t | n | tn] path]
+    genmake [-t type] [-n name] [-f flags] [-D devflags] [-s[t | n | tn] path]
+	genmake [-vdh] [path]
 
 Options:
     -h, --help
@@ -42,3 +43,9 @@ Options:
         Declare a directory as a subproject with its own Makefile. A rule to
         make it will be added to the final Makefile. --type and --name can be
         used with --subproject. If no type is provided it will default to lib.
+
+    -f, --flags
+        Set Makefile's CFLAGS to a custom value.
+
+    -D, --devflags
+        Set flags to add to Makefile's CFLAGS for uncommented version (dev).
