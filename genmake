@@ -10,30 +10,37 @@ NAME="exec"
 ################################# utils ########################################
 
 function usage {
-	printf "usage: genmake [path] [-vdh] [-t type] [-n name] [-s[t | n | tn] path]\n\n"
-	printf "options:\n"
-	printf "	-h | --help:	Print this.\n"
-	printf "	-t | --type:	The next argument is the type\n"
-	printf "			of the target that the generated\n"
-	printf "			makefile will create. That value\n"
-	printf "			can be 'exec 'or 'lib', where the\n"
-	printf "			first one refers to a program, and\n"
-	printf "			the second to a library (compiles\n"
-	printf "			a program by default). The type will\n"
-	printf "			be set to library if a name is provided\n"
-	printf "			and it ends with '.a' suffix.\n"
-	printf "	-n | --name:	Name of the target ('exec' by default\n"
-	printf "			or 'lib.a' if type is 'lib'). A suffix\n"
-	printf "			'.a' will be added to the name if the\n"
-	printf "			type of the target is 'lib' and the\n"
-	printf "			extension is not present.\n"
-	printf "	-v | --verbose:	Print additional informations\n"
-	printf "	-d | --debug:	Print even more additional informations\n"
-	printf "	-s | --subproject:	Declare a directory as a subproject\n"
-	printf "			with its own Makefile. A rule to make it will be\n"
-	printf "			added to the final Makefile. --type and --name\n"
-	printf "			can be used with --subproject. If no type is\n"
-	printf "			provided it will default to lib.\n"
+	cat << EOF
+Usage:
+    genmake [path] [-vdh] [-t type] [-n name] [-s[t | n | tn] path]
+
+Options:
+    -h, --help
+        Print this.
+
+    -t, --type
+        The next argument is the type of the target that the generated makefile
+        will create. That value can be 'exec 'or 'lib', where the first one
+        refers to a program, and the second to a library (compiles a program by
+        default). The type will be set to library if a name is provided and it
+        ends with '.a' suffix.
+
+    -n, --name
+        Name of the target ('exec' by default or 'lib.a' if type is 'lib'). A
+        suffix '.a' will be added to the name if the type of the target is 'lib'
+        and the extension is not present.
+
+    -v, --verbose
+        Print additional informations.
+
+    -d, --debug
+        Print even more additional informations.
+
+    -s, --subproject
+        Declare a directory as a subproject with its own Makefile. A rule to
+        make it will be added to the final Makefile. --type and --name can be
+        used with --subproject. If no type is provided it will default to lib.
+EOF
 }
 
 function atoi() {
