@@ -5,7 +5,7 @@ import genmake_utils as gmu
 
 ################################ get arguments #################################
 
-if len(sys.argv) < 13:
+if len(sys.argv) < 14:
     sys.exit()
 
 odeps = open(sys.argv[1])
@@ -16,27 +16,28 @@ hdir = sys.argv[5]
 srcdir = sys.argv[6].split('/')[-1]
 flags = sys.argv[7]
 dev_flags = sys.argv[8]
-nbr_dirs = int(sys.argv[9])
-nbr_files = int(sys.argv[10 + nbr_dirs])
-nbr_subs = int(sys.argv[11 + nbr_dirs + nbr_files])
+ext_libs = sys.argv[9]
+nbr_dirs = int(sys.argv[10])
+nbr_files = int(sys.argv[11 + nbr_dirs])
+nbr_subs = int(sys.argv[12 + nbr_dirs + nbr_files])
 
 sub_names = []
 sub_dirs = []
 sub_types = []
 for i in range(0, nbr_subs):
-    sub_names.append(sys.argv[12 + nbr_dirs + nbr_files + i])
-    sub_dirs.append(sys.argv[12 + nbr_dirs + nbr_files + nbr_subs + i])
+    sub_names.append(sys.argv[13 + nbr_dirs + nbr_files + i])
+    sub_dirs.append(sys.argv[13 + nbr_dirs + nbr_files + nbr_subs + i])
     if gmu.is_quoted(sub_dirs[i]):
         sub_dirs[i] = gmu.replace_by(sub_dirs[i], "\"")
         sub_dirs[i] = gmu.replace_by(sub_dirs[i], " ", "\\ ")
-    sub_types.append(sys.argv[12 + nbr_dirs + nbr_files + (nbr_subs * 2) + i])
+    sub_types.append(sys.argv[13 + nbr_dirs + nbr_files + (nbr_subs * 2) + i])
     if sub_types[i] == "lib" and sub_names[i][-2:] != ".a":
         sub_names[i] += ".a"
 
 dirs = []
 pathlen = len(projdir.split('/'))
 for i in range(1, nbr_dirs):
-    path_dir = sys.argv[10 + i].split('/')
+    path_dir = sys.argv[11 + i].split('/')
     if len(path_dir) == pathlen + 2 and srcdir + "/" + path_dir[-1] not in sub_dirs:
         dirs.append(path_dir[-1])
     else:
@@ -71,6 +72,8 @@ if nbr_subs > 0 and "lib" in sub_types:
             makef.write("$(SUB" + str(i + 1) + "D)/" + sub_names[i])
         if i < nbr_subs - 1 and "lib" in sub_types[i + 1:]:
             makef.write(' ')
+    if len(ext_libs) > 0:
+        makef.write(" " + ext_libs)
     makef.write('\n')
 
 makef.write("NAME\t\t=\t")
@@ -100,7 +103,7 @@ for i in range(0, nbr_dirs - 1):
 files[srcdir] = []
 
 for i in range(0, nbr_files):
-    raw = sys.argv[11 + nbr_dirs + i].split('/')
+    raw = sys.argv[12 + nbr_dirs + i].split('/')
     if len(raw) == pathlen + 2:
         files[srcdir].append(raw[-1])
     elif raw[pathlen + 1] in files:

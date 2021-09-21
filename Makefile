@@ -6,7 +6,7 @@
 #    By: yforeau <yforeau@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/12/14 22:53:56 by yforeau           #+#    #+#              #
-#    Updated: 2021/09/21 20:49:32 by yforeau          ###   ########.fr        #
+#    Updated: 2021/09/21 21:01:35 by yforeau          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ TYPE		?=	exec
 TARG		?=	$(TYPE)
 FLAGS		?=	""
 DEVFLAGS	?=	""
+EXTLIBS		?=	""
 SUBCOUNT	?=	0
 SUBPATHS	?=	""
 SUBTYPES	?=	""
@@ -40,6 +41,7 @@ ifeq ($(DEBUG), 1)
 	@echo NAME: $(NAME)
 	@echo FLAGS: $(FLAGS)
 	@echo DEVFLAGS: $(DEVFLAGS)
+	@echo EXTLIBS: $(EXTLIBS)
 	@echo SUBCOUNT: $(SUBCOUNT)
 	@echo SUBPATHS: $(SUBPATHS)
 	@echo SUBTYPES: $(SUBTYPES)
@@ -66,8 +68,8 @@ all: debug $(NAME)
 $(NAME): odeps
 	./format_odeps.py odeps $(PROJDIR) $(SRCDIR) $(SUBCOUNT) $(SUBPATHS)
 	./make_makefile.py odeps $(TYPE) $(TARG) $(PROJDIR) $(HDIR) $(SRCDIR)\
-		"$(FLAGS)" "$(DEVFLAGS)" $(NBRDIRS) $(DIRS) $(NBRCF) $(CFILES)\
-		$(SUBCOUNT) $(SUBNAMES) $(SUBPATHS) $(SUBTYPES)
+		"$(FLAGS)" "$(DEVFLAGS)" "$(EXTLIBS)" $(NBRDIRS) $(DIRS) $(NBRCF)\
+		$(CFILES) $(SUBCOUNT) $(SUBNAMES) $(SUBPATHS) $(SUBTYPES)
 
 odeps: $(CFILES)
 	rm -f $@
