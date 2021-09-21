@@ -6,6 +6,7 @@ PROJDIR=$(pwd)
 PWDIR=$PROJDIR
 TYPE="exec"
 NAME="exec"
+FLAGS="-Wall -Wextra -Werror"
 
 ################################# utils ########################################
 
@@ -40,6 +41,9 @@ Options:
         Declare a directory as a subproject with its own Makefile. A rule to
         make it will be added to the final Makefile. --type and --name can be
         used with --subproject. If no type is provided it will default to lib.
+
+    -f, --flags
+        Set Makefile's CFLAGS to a custom value.
 EOF
 }
 
@@ -190,6 +194,10 @@ while [ "$1" != "" ]; do
 		VERB=1
 		DEBUG=1
 		;;
+	-f | --flags )
+		shift
+		FLAGS=$1
+		;;
 	* )
 		if [ "$PROJDIR" != "$PWDIR" ]; then
 			echo "genmake: \""$1"\" is not a valid argument or option."
@@ -232,6 +240,7 @@ if [ $VERB != 0 ]; then
 	printf "SUBPATHS: %s\n" $SUBPATHS
 	printf "SUBTYPES: %s\n" $SUBTYPES
 	printf "SUBNAMES: %s\n" $SUBNAMES
+	printf "FLAGS: %s\n" $FLAGS
 fi
 
 ############################## make makefile ###################################
@@ -243,12 +252,13 @@ printf "making Makefile...\n"
 if [ $DEBUG != 0 ]; then
 	make -C $GMDIR PROJDIR=$PROJDIR TYPE=$TYPE TARG=$NAME DEBUG=$DEBUG\
 		SUBCOUNT=$SUBCOUNT SUBPATHS=$SUBPATHS SUBTYPES=$SUBTYPES\
-		SUBNAMES=$SUBNAMES
+		SUBNAMES=$SUBNAMES FLAGS=$FLAGS
 	ERR=$?
 	rm -f $GMDIR/odeps
 else
 	make -C $GMDIR PROJDIR=$PROJDIR TYPE=$TYPE TARG=$NAME SUBCOUNT=$SUBCOUNT\
-		SUBPATHS=$SUBPATHS SUBTYPES=$SUBTYPES SUBNAMES=$SUBNAMES > /dev/null
+		SUBPATHS=$SUBPATHS SUBTYPES=$SUBTYPES SUBNAMES=$SUBNAMES\
+		FLAGS=$FLAGS > /dev/null
 	ERR=$?
 	rm -f $GMDIR/odeps > /dev/null
 fi
