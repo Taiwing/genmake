@@ -51,4 +51,4 @@ Options:
         Set flags to add to Makefile's CFLAGS for uncommented version (dev).
 
     -l, --libs
-		Add external libraries (eg: '-ltermcap -lpthread -lpcap').
+        Add external libraries (eg: '-ltermcap -lpthread -lpcap').
