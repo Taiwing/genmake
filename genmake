@@ -16,7 +16,8 @@ function usage {
 	cat << EOF
 Usage:
     genmake [-t type] [-n name] [-f flags] [-D devflags] [-s[t | n | tn] path]
-	genmake [-vdh] [-l libs] [path]
+    genmake [-vdh] [-l libs] [path]
+    genmake
 
 Options:
     -h, --help
@@ -53,6 +54,14 @@ Options:
 
     -l, --libs
         Add external libraries (eg: '-ltermcap -lpthread -lpcap').
+
+Advanced:
+    If genmake is not provided any options and arguments it will check if a
+    '.genmake' file exists at the root of the current directory. If it there is
+    such a file genmake will use its content as options and arguments. Otherwise
+    the defaults will be used to generate the Makefile. This is useful to avoid
+    retyping the same command over and over especially in cases where specific
+    compilation flags must be set and/or the project has a lot dependencies.
 EOF
 }
 
@@ -101,7 +110,6 @@ function atoi() {
 
 GMDIR=$(dirname $0)
 SCRIPTNAME="$0"
-ARGS="$@"
 BRANCH="master"
 
 self_update() {
@@ -114,7 +122,7 @@ self_update() {
         git pull --force
         echo "Running the new version..."
 		cd $PROJDIR
-        exec "$SCRIPTNAME" "$@"
+        exec "$SCRIPTNAME" $@
         # Now exit this old instance
         exit 1
     }
@@ -130,6 +138,11 @@ SUBCOUNT=0
 SUBPATHS=""
 SUBTYPES=""
 SUBNAMES=""
+if [[ "$1" == "" && -f "$PWDIR/.genmake" ]]; then
+	echo "Using '.genmake' contents for arguments."
+	exec "$SCRIPTNAME" $(cat $PWDIR/.genmake)
+	exit 0
+fi
 while [ "$1" != "" ]; do
 	OPT=$1
 	case $OPT in

@@ -52,3 +52,11 @@ Options:
 
     -l, --libs
         Add external libraries (eg: '-ltermcap -lpthread -lpcap').
+
+Advanced:
+    If genmake is not provided any options and arguments it will check if a
+    '.genmake' file exists at the root of the current directory. If it there is
+    such a file genmake will use its content as options and arguments. Otherwise
+    the defaults will be used to generate the Makefile. This is useful to avoid
+    retyping the same command over and over especially in cases where specific
+    compilation flags must be set and/or the project has a lot dependencies.
