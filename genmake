@@ -140,7 +140,7 @@ SUBTYPES=""
 SUBNAMES=""
 if [[ "$1" == "" && -f "$PWDIR/.genmake" ]]; then
 	echo "Using '.genmake' contents for arguments."
-	exec "$SCRIPTNAME" $(cat $PWDIR/.genmake)
+	xargs < $PWDIR/.genmake "$SCRIPTNAME"
 	exit 0
 fi
 while [ "$1" != "" ]; do
