@@ -65,15 +65,15 @@ for i in range(0, nbr_subs):
     if sub_types[i] == "lib":
         makef.write(" -I $(SUB" + str(i + 1) + "D)/$(HDIR)")
 makef.write("\n")
-if nbr_subs > 0 and "lib" in sub_types:
+if len(ext_libs) > 0 or (nbr_subs > 0 and "lib" in sub_types):
     makef.write("LIBS\t\t=\t")
     for i in range(0, nbr_subs):
         if sub_types[i] == "lib":
             makef.write("$(SUB" + str(i + 1) + "D)/" + sub_names[i])
-        if i < nbr_subs - 1 and "lib" in sub_types[i + 1:]:
+        if len(ext_libs) > 0 or (i < nbr_subs - 1 and "lib" in sub_types[i + 1:]):
             makef.write(' ')
     if len(ext_libs) > 0:
-        makef.write(" " + ext_libs)
+        makef.write(ext_libs)
     makef.write('\n')
 
 makef.write("NAME\t\t=\t")
@@ -172,7 +172,7 @@ if targ_type == "lib":
     makef.write("\tranlib $@\n\n")
 else:
     makef.write("\t$(CC) $(CFLAGS) -o $@ $(patsubst %.o,$(ODIR)/%.o,$(OBJ))")
-    if nbr_subs > 0 and "lib" in sub_types:
+    if len(ext_libs) or (nbr_subs > 0 and "lib" in sub_types):
         makef.write(" $(LIBS)\n\n")
     else:
         makef.write("\n\n")
