@@ -1,18 +1,41 @@
-Pre-requisites:
-- the project must be developped in C
-- there must be a src/ directory where all the C files will be (either
-  directly at the root of the directory or in subdirectories)
-- 1 is the level max of subdirectories permitted in src/ except if a
-  subdirectory is specified as a subproject
-- if there are subprojects they are supposed to have Makefiles with
-  the rules required by 42's norme (except if --recursive is set)
-- the headers will be in a directory named includes/ located
-  at the root of the project
-- every include directive of a source header must not include the path,
-  only the file name
-- if any of these requirements are not met, genmake will not be able to
-  produce a working makefile for the project
+# genmake
 
+This tool is a Makefile generator for C projects. I builds a fully working
+Makefile, in compliance with 42's standard, with a simple one word command. This
+makes develoment easier and faster.
+
+## Setup
+
+```shell
+# clone it
+git clone https://github.com/Taiwing/genmake
+cd genmake/
+# create an alias in your shell
+alias genmake="$(pwd)/genmake"
+# run it in your project directory
+cd ~/my_c_project && genmake
+```
+
+## Pre-requisites
+
+- The project must be developped in C
+- There must be a src/ directory where all the C files will be (either
+  directly at the root of the directory or in subdirectories).
+- 1 is the level max of subdirectories permitted in src/ except if a
+  subdirectory is specified as a subproject.
+- If there are subprojects they are supposed to have Makefiles with
+  the rules required by 42's norme (except if --recursive is set).
+- The headers will be in a directory named includes/ located
+  at the root of the project.
+- Every include directive of a source header must not include the path,
+  only the file name.
+
+> If any of these requirements is not met genmake will not be able to produce a
+> working makefile for the project.
+
+## Usage
+
+```
 Usage:
     genmake [-t type] [-n name] [-f flags] [-D devflags] [-s[t | n | tn] path]
 	genmake [-vdh] [path]
@@ -60,3 +83,4 @@ Advanced:
     the defaults will be used to generate the Makefile. This is useful to avoid
     retyping the same command over and over especially in cases where specific
     compilation flags must be set and/or the project has a lot dependencies.
+```
