@@ -1,6 +1,6 @@
 # genmake
 
-This tool is a Makefile generator for C projects. I builds a fully working
+This tool is a Makefile generator for C projects. It builds a fully working
 Makefile, in compliance with 42's standard, with a simple one word command. This
 makes develoment easier and faster.
 
@@ -19,7 +19,7 @@ cd ~/my_c_project && genmake
 ## Pre-requisites
 
 - The project must be developped in C
-- There must be a src/ directory where all the C files will be (either
+- There must be a src/ directory where every C file will be located (either
   directly at the root of the directory or in subdirectories).
 - 1 is the level max of subdirectories permitted in src/ except if a
   subdirectory is specified as a subproject.
@@ -37,7 +37,7 @@ cd ~/my_c_project && genmake
 
 ```
 Usage:
-    genmake [-t type] [-n name] [-f flags] [-D devflags] [-s[t | n | tn] path]
+	genmake [-t type] [-n name] [-f flags] [-D devflags] [-s[t | n | tn] path]
 	genmake [-vdh] [path]
 
 Options:
