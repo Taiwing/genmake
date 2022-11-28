@@ -14,8 +14,6 @@ git clone https://github.com/Taiwing/genmake
 cd genmake/
 # create an alias in your shell
 alias genmake="$(pwd)/genmake"
-# run it in your project directory
-cd ~/my_c_project && genmake
 ```
 
 ## Pre-requisites
@@ -85,4 +83,29 @@ Advanced:
     the defaults will be used to generate the Makefile. This is useful to avoid
     retyping the same command over and over especially in cases where specific
     compilation flags must be set and/or the project has a lot dependencies.
+```
+
+#### example:
+
+```shell
+# create the project directory
+mkdir my_c_project && cd my_c_project/
+# create source and header directories
+mkdir src && mkdir includes
+# create main source file
+cat << END > src/main.c
+#include "my_header.h"
+
+int main(void) {
+	printf("it works!\n");
+}
+END
+# create header
+echo '#include <stdio.h>' > includes/my_header.h
+# generate Makefile
+genmake
+# compile
+make
+# and run!
+./exec
 ```
