@@ -1,8 +1,10 @@
 # genmake
 
-This tool is a Makefile generator for C projects. It builds a fully working
-Makefile, in compliance with 42's standard, with a simple one word command. This
-makes develoment easier and faster.
+This tool is a Makefile generator for C projects. The goal is to build a fully
+working 42 style Makefile with a simple one-word command. Each time the project
+structure is modified (when adding/removing a source file or a dependency), the
+script can be called again to overwrite the previous Makefile and compile the
+project. This makes C application development easier and faster.
 
 ## Setup
 
@@ -37,8 +39,8 @@ cd ~/my_c_project && genmake
 
 ```
 Usage:
-	genmake [-t type] [-n name] [-f flags] [-D devflags] [-s[t | n | tn] path]
-	genmake [-vdh] [path]
+    genmake [-t type] [-n name] [-f flags] [-D devflags] [-s[t | n | tn] path]
+    genmake [-vdh] [path]
 
 Options:
     -h, --help
